@@ -3,5 +3,4 @@
 Currently supports:
 - Four operations
 - Order of operations
-- `evaluate()` function with single precision
-Parantheses are currently not supported.
+- `evaluate()` function with double precision
