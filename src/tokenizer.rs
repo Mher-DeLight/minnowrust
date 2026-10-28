@@ -7,6 +7,8 @@ pub enum TokenType {
     Minus,
     Times,
     Over,
+    LParen,
+    RParen,
 }
 
 #[derive(Debug)]
@@ -74,6 +76,16 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
             tokens.push(Token {
                 lexeme: String::from(c),
                 tk_type: TokenType::Over,
+            });
+        } else if c == '(' {
+            tokens.push(Token {
+                lexeme: String::from(c),
+                tk_type: TokenType::LParen,
+            });
+        } else if c == ')' {
+            tokens.push(Token {
+                lexeme: String::from(c),
+                tk_type: TokenType::RParen,
             });
         } else if c != ' ' {
             return Err(EvalError::InvalidCharacter(c));

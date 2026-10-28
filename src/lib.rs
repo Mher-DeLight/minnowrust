@@ -20,6 +20,8 @@ pub enum EvalError {
     UnexpectedToken(String),
     DivisionByZero,
     OutOfBoundsCharacter,
+    InvalidFactor,
+    UnmatchedParantheses,
     Unknown,
 }
 
@@ -80,5 +82,13 @@ mod tests {
         assert_eq!(calculate("1+ 1"), 2.0);
         assert_eq!(calculate("5 * 6/3"), 10.0);
         assert_eq!(calculate("1+3*2"), 7.0);
+    }
+
+    #[test]
+    fn test_parantheses() {
+        assert_eq!(calculate("2 * (3 + 2)"), 10.0);
+        assert_eq!(calculate("(5 + 1) * 3"), 18.0);
+        assert_eq!(calculate("(1+2)*5"), 15.0);
+        assert_eq!(calculate("( 5 + 2)*  7"), 49.0);
     }
 }

@@ -1,7 +1,4 @@
-use crate::{
-    EvalError, Float,
-    tokenizer::{Token, TokenType},
-};
+use crate::{EvalError, Float, tokenizer::TokenType};
 
 #[derive(Clone, Debug)]
 pub enum Operation {
@@ -59,7 +56,7 @@ impl Parser {
                     left = Operation::Subtraction(Box::new(left.clone()), Box::new(right.clone()));
                 }
                 _ => {
-                    EvalError::UnexpectedToken(tkn.lexeme.clone());
+                    break;
                 }
             }
 
@@ -71,22 +68,14 @@ impl Parser {
         return Ok(left);
     }
     fn parse_term(&mut self) -> Result<Operation, EvalError> {
-        let left_tkn: &Token = self
-            .tokens
-            .get(self.i)
-            .expect("out of bounds while parsing term");
-        let mut left: Operation = Operation::Number(left_tkn.lexeme.parse().unwrap());
+        let mut left = self.parse_factor().expect("invalid factor");
 
         self.i += 1;
         while let Some(tkn) = self.tokens.get(self.i) {
             match tkn.tk_type {
                 TokenType::Times => {
                     self.i += 1;
-                    let right_tkn = self
-                        .tokens
-                        .get(self.i)
-                        .expect("out of bounds while parsing term (3)");
-                    let right = Operation::Number(right_tkn.lexeme.parse().unwrap());
+                    let right = self.parse_factor().expect("invalid factor");
 
                     self.i += 1;
 
@@ -116,5 +105,31 @@ impl Parser {
         }
 
         return Ok(left);
+    }
+    fn parse_factor(&mut self) -> Result<Operation, EvalError> {
+        let tkn = self
+            .tokens
+            .get(self.i)
+            .expect("out of bounds while parsing factor");
+        match tkn.tk_type {
+            TokenType::Number => {
+                return Ok(Operation::Number(tkn.lexeme.parse().unwrap()));
+            }
+            TokenType::LParen => {
+                self.i += 1;
+                let inner = self.parse_addition().unwrap();
+                if self
+                    .tokens
+                    .get(self.i)
+                    .expect("unclosed parantheses")
+                    .tk_type
+                    != TokenType::RParen
+                {
+                    return Err(EvalError::UnmatchedParantheses);
+                }
+                return Ok(inner);
+            }
+            _ => return Err(EvalError::InvalidFactor),
+        }
     }
 }
