@@ -1,11 +1,11 @@
 use crate::{
-    EvalError, float,
+    EvalError, Float,
     tokenizer::{Token, TokenType},
 };
 
 #[derive(Clone, Debug)]
 pub enum Operation {
-    Number(float),
+    Number(Float),
     Addition(Box<Operation>, Box<Operation>),
     Subtraction(Box<Operation>, Box<Operation>),
     Multiplication(Box<Operation>, Box<Operation>),
@@ -13,7 +13,7 @@ pub enum Operation {
 }
 
 impl Operation {
-    pub fn evaluate(&self) -> float {
+    pub fn evaluate(&self) -> Float {
         match self {
             Operation::Number(n) => *n,
             Operation::Addition(left, right) => left.evaluate() + right.evaluate(),
