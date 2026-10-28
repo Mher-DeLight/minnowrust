@@ -4,7 +4,7 @@ fn main() {
     loop {
         let mut input = String::new();
 
-        print!("minnow> ");
+        print!("minnowop> ");
         io::stdout().flush().expect("Failed to flush stdout");
 
         if io::stdin().read_line(&mut input).is_err() {
@@ -18,7 +18,7 @@ fn main() {
             break;
         }
 
-        match minnow::evaluate(input) {
+        match minnowop::evaluate(input) {
             Ok(result) => println!("{result}"),
             Err(error) => eprintln!("Error: {error:?}"),
         }
