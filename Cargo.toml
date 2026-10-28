@@ -1,0 +1,10 @@
+[package]
+name = "minnow"
+version = "0.1.0"
+edition = "2024"
+description = "A lightweight arithmetic expression evaluator"
+license = "MIT"
+repository = "https://github.com/Mher-DeLight/minnowrust"
+
+[lib]
+path = "src/lib.rs"
