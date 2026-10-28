@@ -70,4 +70,14 @@ mod tests {
         assert_eq!(calculate("1 + 7 / 7"), 2.0);
         assert_eq!(calculate("8 / 4 + 2 / 1"), 4.0);
     }
+
+    #[test]
+    fn test_spaces() {
+        assert_eq!(calculate("1+1"), 2.0);
+        assert_eq!(calculate("1 + 1"), 2.0);
+        assert_eq!(calculate("1 +1"), 2.0);
+        assert_eq!(calculate("1+ 1"), 2.0);
+        assert_eq!(calculate("5 * 6/3"), 10.0);
+        assert_eq!(calculate("1+3*2"), 7.0);
+    }
 }

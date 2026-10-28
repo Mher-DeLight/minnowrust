@@ -54,6 +54,7 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
                 lexeme: num_string,
                 tk_type: TokenType::Number,
             });
+            i -= 1;
         } else if c == '+' {
             tokens.push(Token {
                 lexeme: String::from(c),
