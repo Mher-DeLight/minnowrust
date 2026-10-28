@@ -2,8 +2,9 @@ mod parser;
 mod tokenizer;
 
 pub use parser::Operation;
+type float = f64;
 
-pub fn evaluate(input: &str) -> Result<f32, EvalError> {
+pub fn evaluate(input: &str) -> Result<float, EvalError> {
     let tokens = tokenizer::tokenize(input)?;
     let mut parser = parser::Parser::new(tokens);
     parser.parse()?;
@@ -25,9 +26,9 @@ pub enum EvalError {
 // unit tests
 #[cfg(test)]
 mod tests {
-    use crate::evaluate;
+    use crate::{evaluate, float};
 
-    fn calculate(input: &str) -> f32 {
+    fn calculate(input: &str) -> float {
         return evaluate(input).unwrap();
     }
 
