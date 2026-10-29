@@ -36,6 +36,21 @@ impl Parser {
         };
     }
     pub fn parse(&mut self) -> Result<(), EvalError> {
+        // parantheses check
+        let left_p = self
+            .tokens
+            .iter()
+            .filter(|&t| t.tk_type == TokenType::LParen)
+            .count();
+        let right_p = self
+            .tokens
+            .iter()
+            .filter(|&t| t.tk_type == TokenType::RParen)
+            .count();
+        if left_p != right_p {
+            return Err(EvalError::UnmatchedParantheses);
+        }
+
         let expr = self.parse_addition()?;
         if self.i != self.tokens.len() {
             return Err(EvalError::UnexpectedToken(
