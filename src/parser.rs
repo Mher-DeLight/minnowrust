@@ -84,6 +84,9 @@ impl Parser {
                 TokenType::Over => {
                     self.i += 1;
                     let right = self.parse_factor()?;
+                    if right.evaluate() == 0.0 {
+                        return Err(EvalError::DivisionByZero);
+                    }
 
                     self.i += 1;
 
