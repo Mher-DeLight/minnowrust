@@ -83,8 +83,7 @@ impl Parser {
                 }
                 TokenType::Over => {
                     self.i += 1;
-                    let right_tkn = self.tokens.get(self.i).unwrap();
-                    let right = Operation::Number(right_tkn.lexeme.parse().unwrap());
+                    let right = self.parse_factor()?;
 
                     self.i += 1;
 
