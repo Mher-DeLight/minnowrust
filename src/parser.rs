@@ -48,15 +48,16 @@ impl Parser {
             .filter(|&t| t.tk_type == TokenType::RParen)
             .count();
         if left_p != right_p {
-            return Err(EvalError::UnmatchedParantheses);
+            return Err(EvalError::UnmatchedParantheses(self.i));
         }
 
         let expr = self.parse_addition()?;
         if self.i != self.tokens.len() {
             return Err(EvalError::UnexpectedToken(
+                self.i,
                 self.tokens
                     .get(self.i)
-                    .ok_or(EvalError::OutOfBoundsCharacter)?
+                    .ok_or(EvalError::OutOfBoundsCharacter(self.i))?
                     .lexeme
                     .clone(),
             ));
@@ -109,7 +110,7 @@ impl Parser {
                     self.i += 1;
                     let right = self.parse_factor()?;
                     if right.evaluate() == 0.0 {
-                        return Err(EvalError::DivisionByZero);
+                        return Err(EvalError::DivisionByZero(self.i));
                     }
 
                     self.i += 1;
@@ -130,13 +131,16 @@ impl Parser {
         return Ok(left);
     }
     fn parse_factor(&mut self) -> Result<Operation, EvalError> {
-        let tkn = self.tokens.get(self.i).ok_or(EvalError::UnexpectedEnd)?;
+        let tkn = self
+            .tokens
+            .get(self.i)
+            .ok_or(EvalError::UnexpectedEnd(self.i))?;
         match tkn.tk_type {
             TokenType::Number => {
                 let num: f64 = tkn
                     .lexeme
                     .parse()
-                    .map_err(|_| EvalError::InvalidNumber(tkn.lexeme.clone()))?;
+                    .map_err(|_| EvalError::InvalidNumber(self.i, tkn.lexeme.clone()))?;
                 return Ok(Operation::Number(num));
             }
             TokenType::LParen => {
@@ -145,18 +149,18 @@ impl Parser {
                 if self
                     .tokens
                     .get(self.i)
-                    .ok_or(EvalError::UnexpectedEnd)?
+                    .ok_or(EvalError::UnexpectedEnd(self.i))?
                     .tk_type
                     != TokenType::RParen
                 {
-                    return Err(EvalError::UnmatchedParantheses);
+                    return Err(EvalError::UnmatchedParantheses(self.i));
                 }
                 return Ok(inner);
             }
             TokenType::RParen => {
-                return Err(EvalError::EmptyParantheses);
+                return Err(EvalError::EmptyParantheses(self.i));
             }
-            _ => return Err(EvalError::InvalidFactor),
+            _ => return Err(EvalError::InvalidFactor(self.i)),
         }
     }
 }

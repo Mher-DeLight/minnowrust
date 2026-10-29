@@ -18,33 +18,33 @@ pub struct Token {
 }
 
 pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
-    let mut i = 0;
+    let mut i: usize = 0;
     let mut tokens: Vec<Token> = Vec::new();
 
     while i < plain.chars().count() {
         let c = plain
             .chars()
             .nth(i)
-            .ok_or(EvalError::OutOfBoundsCharacter)?;
+            .ok_or(EvalError::OutOfBoundsCharacter(i))?;
         if c.is_ascii_digit() {
             let mut num_string = String::new();
             while i < plain.chars().count()
                 && (plain
                     .chars()
                     .nth(i)
-                    .ok_or(EvalError::OutOfBoundsCharacter)?
+                    .ok_or(EvalError::OutOfBoundsCharacter(i))?
                     .is_ascii_digit()
                     || plain
                         .chars()
                         .nth(i)
-                        .ok_or(EvalError::OutOfBoundsCharacter)?
+                        .ok_or(EvalError::OutOfBoundsCharacter(i))?
                         == '.')
             {
                 num_string.push(
                     plain
                         .chars()
                         .nth(i)
-                        .ok_or(EvalError::OutOfBoundsCharacter)?,
+                        .ok_or(EvalError::OutOfBoundsCharacter(i))?,
                 );
                 i += 1;
             }
@@ -85,7 +85,7 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
                 tk_type: TokenType::RParen,
             });
         } else if c != ' ' {
-            return Err(EvalError::InvalidCharacter(c));
+            return Err(EvalError::InvalidCharacter(i, c));
         }
 
         i += 1;

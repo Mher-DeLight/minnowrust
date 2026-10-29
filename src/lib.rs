@@ -14,16 +14,16 @@ pub fn evaluate(input: &str) -> Result<Float, EvalError> {
 
 #[derive(Debug, PartialEq)]
 pub enum EvalError {
-    InvalidCharacter(char),
-    InvalidNumber(String),
-    UnexpectedEnd,
-    UnexpectedToken(String),
-    DivisionByZero,
-    OutOfBoundsCharacter,
-    InvalidFactor,
-    UnmatchedParantheses,
-    EmptyParantheses,
-    Unknown,
+    InvalidCharacter(usize, char),
+    InvalidNumber(usize, String),
+    UnexpectedEnd(usize),
+    UnexpectedToken(usize, String),
+    DivisionByZero(usize),
+    OutOfBoundsCharacter(usize),
+    InvalidFactor(usize),
+    UnmatchedParantheses(usize),
+    EmptyParantheses(usize),
+    Unknown(usize),
 }
 
 // unit tests
