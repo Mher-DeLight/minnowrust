@@ -37,6 +37,15 @@ impl Parser {
     }
     pub fn parse(&mut self) -> Result<(), EvalError> {
         let expr = self.parse_addition()?;
+        if self.i != self.tokens.len() {
+            return Err(EvalError::UnexpectedToken(
+                self.tokens
+                    .get(self.i)
+                    .ok_or(EvalError::OutOfBoundsCharacter)?
+                    .lexeme
+                    .clone(),
+            ));
+        }
         self.root = expr;
         return Ok(());
     }
