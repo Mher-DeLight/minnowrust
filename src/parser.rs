@@ -68,14 +68,14 @@ impl Parser {
         return Ok(left);
     }
     fn parse_term(&mut self) -> Result<Operation, EvalError> {
-        let mut left = self.parse_factor().expect("invalid factor");
+        let mut left = self.parse_factor()?;
 
         self.i += 1;
         while let Some(tkn) = self.tokens.get(self.i) {
             match tkn.tk_type {
                 TokenType::Times => {
                     self.i += 1;
-                    let right = self.parse_factor().expect("invalid factor");
+                    let right = self.parse_factor()?;
 
                     self.i += 1;
 
@@ -83,10 +83,7 @@ impl Parser {
                 }
                 TokenType::Over => {
                     self.i += 1;
-                    let right_tkn = self
-                        .tokens
-                        .get(self.i)
-                        .expect("out of bounds while parsing term (3)");
+                    let right_tkn = self.tokens.get(self.i).unwrap();
                     let right = Operation::Number(right_tkn.lexeme.parse().unwrap());
 
                     self.i += 1;
@@ -107,10 +104,7 @@ impl Parser {
         return Ok(left);
     }
     fn parse_factor(&mut self) -> Result<Operation, EvalError> {
-        let tkn = self
-            .tokens
-            .get(self.i)
-            .expect("out of bounds while parsing factor");
+        let tkn = self.tokens.get(self.i).ok_or(EvalError::UnexpectedEnd)?;
         match tkn.tk_type {
             TokenType::Number => {
                 return Ok(Operation::Number(tkn.lexeme.parse().unwrap()));
@@ -121,7 +115,7 @@ impl Parser {
                 if self
                     .tokens
                     .get(self.i)
-                    .expect("unclosed parantheses")
+                    .ok_or(EvalError::UnexpectedEnd)?
                     .tk_type
                     != TokenType::RParen
                 {

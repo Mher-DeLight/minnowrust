@@ -33,7 +33,7 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
                 && (plain
                     .chars()
                     .nth(i)
-                    .expect("out of bounds")
+                    .ok_or(EvalError::OutOfBoundsCharacter)?
                     .is_ascii_digit()
                     || plain
                         .chars()
