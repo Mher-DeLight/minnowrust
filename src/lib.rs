@@ -22,6 +22,7 @@ pub enum EvalError {
     OutOfBoundsCharacter,
     InvalidFactor,
     UnmatchedParantheses,
+    EmptyParantheses,
     Unknown,
 }
 

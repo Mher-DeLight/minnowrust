@@ -149,6 +149,9 @@ impl Parser {
                 }
                 return Ok(inner);
             }
+            TokenType::RParen => {
+                return Err(EvalError::EmptyParantheses);
+            }
             _ => return Err(EvalError::InvalidFactor),
         }
     }
