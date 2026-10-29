@@ -73,12 +73,12 @@ impl Parser {
                 TokenType::Plus => {
                     self.i += 1;
                     let right = self.parse_term()?;
-                    left = Operation::Addition(Box::new(left.clone()), Box::new(right.clone()));
+                    left = Operation::Addition(Box::from(left.clone()), Box::from(right));
                 }
                 TokenType::Minus => {
                     self.i += 1;
                     let right = self.parse_term()?;
-                    left = Operation::Subtraction(Box::new(left.clone()), Box::new(right.clone()));
+                    left = Operation::Subtraction(Box::new(left.clone()), Box::new(right));
                 }
                 _ => {
                     break;
