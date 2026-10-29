@@ -25,8 +25,7 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
         let c = plain
             .chars()
             .nth(i)
-            .ok_or(EvalError::OutOfBoundsCharacter)
-            .unwrap();
+            .ok_or(EvalError::OutOfBoundsCharacter)?;
         if c.is_ascii_digit() {
             let mut num_string = String::new();
             while i < plain.chars().count()
@@ -38,16 +37,14 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
                     || plain
                         .chars()
                         .nth(i)
-                        .ok_or(EvalError::OutOfBoundsCharacter)
-                        .unwrap()
+                        .ok_or(EvalError::OutOfBoundsCharacter)?
                         == '.')
             {
                 num_string.push(
                     plain
                         .chars()
                         .nth(i)
-                        .ok_or(EvalError::OutOfBoundsCharacter)
-                        .unwrap(),
+                        .ok_or(EvalError::OutOfBoundsCharacter)?,
                 );
                 i += 1;
             }

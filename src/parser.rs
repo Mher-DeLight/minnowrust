@@ -133,11 +133,15 @@ impl Parser {
         let tkn = self.tokens.get(self.i).ok_or(EvalError::UnexpectedEnd)?;
         match tkn.tk_type {
             TokenType::Number => {
-                return Ok(Operation::Number(tkn.lexeme.parse().unwrap()));
+                let num: f64 = tkn
+                    .lexeme
+                    .parse()
+                    .map_err(|_| EvalError::InvalidNumber(tkn.lexeme.clone()))?;
+                return Ok(Operation::Number(num));
             }
             TokenType::LParen => {
                 self.i += 1;
-                let inner = self.parse_addition().unwrap();
+                let inner = self.parse_addition()?;
                 if self
                     .tokens
                     .get(self.i)
