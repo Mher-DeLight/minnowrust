@@ -23,6 +23,13 @@ pub fn evaluate_with_keychain(input: &str, keychain: &Keychain) -> Result<Float,
 
     return Ok(result);
 }
+pub fn generate_expression(input: &str) -> Result<Operation, EvalError> {
+    let tokens = tokenizer::tokenize(input)?;
+    let mut parser = parser::Parser::new(tokens);
+    parser.parse()?;
+
+    return Ok(parser.root);
+}
 
 #[derive(Debug, PartialEq)]
 pub enum EvalError {
@@ -44,7 +51,7 @@ pub enum EvalError {
 // unit tests
 #[cfg(test)]
 mod tests {
-    use crate::{Float, Keychain, Operation, evaluate};
+    use crate::{Float, Keychain, evaluate, generate_expression};
 
     fn calculate(input: &str) -> Float {
         return evaluate(input).unwrap();
@@ -114,21 +121,9 @@ mod tests {
         keychain.define_variable('a', crate::Operation::Number(6.0));
         keychain.define_variable('b', crate::Operation::Variable(String::from("a")));
 
-        let expr = Operation::Multiplication(
-            Box::new(Operation::Number(5.0)),
-            Box::new(Operation::Addition(
-                Box::new(Operation::Variable(String::from("a"))),
-                Box::new(Operation::Number(3.0)),
-            )),
-        );
+        let expr = generate_expression("7 * a + 3").unwrap();
         assert_eq!(expr.evaluate_with_keychain(&keychain).unwrap(), 45.0);
-        let expr2 = Operation::Addition(
-            Box::new(Operation::Number(5.0)),
-            Box::new(Operation::Multiplication(
-                Box::new(Operation::Variable(String::from("b"))),
-                Box::new(Operation::Number(7.0)),
-            )),
-        );
-        assert_eq!(expr2.evaluate_with_keychain(&keychain).unwrap(), 47.0);
+        let expr2 = generate_expression("5 + 2 * b").unwrap();
+        assert_eq!(expr2.evaluate_with_keychain(&keychain).unwrap(), 17.0);
     }
 }
