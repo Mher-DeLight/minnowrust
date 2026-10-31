@@ -26,6 +26,8 @@ pub enum EvalError {
     UnmatchedParantheses(usize),
     EmptyParantheses(usize),
     InvalidEvaluationWithVariable(usize),
+    UndefinedVariable(usize, char),
+    InvalidVariableName(usize, String),
     Unknown(usize),
 }
 
