@@ -125,9 +125,11 @@ mod tests {
 
     #[test]
     fn test_keychain_generation() {
-        let keychain = new_keychain!(a = 5.0, b = 3.0);
+        let keychain1 = new_keychain!(a = 5.0, b = 3.0);
+        let keychain2 = new_keychain!(a = 7.0, b = 10.0);
         let expr = generate_expression("a + b").unwrap();
 
-        assert_eq!(expr.evaluate_with_keychain(&keychain).unwrap(), 8.0);
+        assert_eq!(expr.evaluate_with_keychain(&keychain1).unwrap(), 8.0);
+        assert_eq!(expr.evaluate_with_keychain(&keychain2).unwrap(), 17.0);
     }
 }
