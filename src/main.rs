@@ -1,6 +1,10 @@
 use std::io::{self, Write};
 
 fn main() {
+    question_loop();
+}
+
+fn question_loop() {
     let mut keychain = minnowop::Keychain::new();
     keychain.define_variable('a', minnowop::Operation::Number(5.0));
 
