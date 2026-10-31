@@ -59,3 +59,16 @@ impl Function {
         return Err(EvalError::UndefinedVariable(0, varname));
     }
 }
+
+#[macro_export]
+macro_rules! new_keychain {
+    ($($key:ident = $value:expr),* $(,)?) => {{
+        let mut keychain = Keychain::new();
+
+        $(
+            keychain.define_variable(stringify!($key).to_string().chars().next().unwrap(), $crate::Operation::Number($value));
+        )*
+
+        keychain
+    }};
+}
