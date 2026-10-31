@@ -19,24 +19,20 @@ impl Keychain {
 }
 pub type Function = Operation;
 impl Function {
-    pub fn evaluate_with_keychain(&self, keychain: &Keychain) -> Result<Float, EvalError> {
+    pub fn eval_for(&self, keychain: &Keychain) -> Result<Float, EvalError> {
         match self {
             Operation::Number(n) => Ok(*n),
             Operation::Addition(left, right) => {
-                Ok(left.evaluate_with_keychain(keychain)?
-                    + right.evaluate_with_keychain(keychain)?)
+                Ok(left.eval_for(keychain)? + right.eval_for(keychain)?)
             }
             Operation::Subtraction(left, right) => {
-                Ok(left.evaluate_with_keychain(keychain)?
-                    - right.evaluate_with_keychain(keychain)?)
+                Ok(left.eval_for(keychain)? - right.eval_for(keychain)?)
             }
             Operation::Multiplication(left, right) => {
-                Ok(left.evaluate_with_keychain(keychain)?
-                    * right.evaluate_with_keychain(keychain)?)
+                Ok(left.eval_for(keychain)? * right.eval_for(keychain)?)
             }
             Operation::Division(left, right) => {
-                Ok(left.evaluate_with_keychain(keychain)?
-                    / right.evaluate_with_keychain(keychain)?)
+                Ok(left.eval_for(keychain)? / right.eval_for(keychain)?)
             }
 
             Operation::Variable(n) => Self::resolve_variable(
@@ -54,7 +50,7 @@ impl Function {
                 .hashmap
                 .get(&varname)
                 .ok_or_else(|| EvalError::Unknown(0))?
-                .evaluate_with_keychain(keychain)?);
+                .eval_for(keychain)?);
         }
         return Err(EvalError::UndefinedVariable(0, varname));
     }

@@ -15,13 +15,13 @@ pub enum Operation {
 }
 
 impl Operation {
-    pub fn evaluate(&self) -> Result<Float, EvalError> {
+    pub fn eval(&self) -> Result<Float, EvalError> {
         match self {
             Operation::Number(n) => Ok(*n),
-            Operation::Addition(left, right) => Ok(left.evaluate()? + right.evaluate()?),
-            Operation::Subtraction(left, right) => Ok(left.evaluate()? - right.evaluate()?),
-            Operation::Multiplication(left, right) => Ok(left.evaluate()? * right.evaluate()?),
-            Operation::Division(left, right) => Ok(left.evaluate()? / right.evaluate()?),
+            Operation::Addition(left, right) => Ok(left.eval()? + right.eval()?),
+            Operation::Subtraction(left, right) => Ok(left.eval()? - right.eval()?),
+            Operation::Multiplication(left, right) => Ok(left.eval()? * right.eval()?),
+            Operation::Division(left, right) => Ok(left.eval()? / right.eval()?),
 
             Operation::Variable(_n) => Err(EvalError::InvalidEvaluationWithVariable(0)),
         }
@@ -116,7 +116,7 @@ impl Parser {
                 TokenType::Over => {
                     self.i += 1;
                     let right = self.parse_factor()?;
-                    if right.evaluate()? == 0.0 {
+                    if right.eval()? == 0.0 {
                         return Err(EvalError::DivisionByZero(self.i));
                     }
 

@@ -7,15 +7,15 @@ pub use functional::Keychain;
 pub use parser::Operation;
 type Float = f64;
 
-pub fn evaluate(input: &str) -> Result<Float, EvalError> {
+pub fn eval(input: &str) -> Result<Float, EvalError> {
     let expr = generate_expression(input)?;
-    let result = expr.evaluate()?;
+    let result = expr.eval()?;
 
     return Ok(result);
 }
-pub fn evaluate_with_keychain(input: &str, keychain: &Keychain) -> Result<Float, EvalError> {
+pub fn eval_for(input: &str, keychain: &Keychain) -> Result<Float, EvalError> {
     let expr = generate_expression(input)?;
-    let result = expr.evaluate_with_keychain(keychain)?;
+    let result = expr.eval_for(keychain)?;
 
     return Ok(result);
 }
@@ -47,10 +47,10 @@ pub enum EvalError {
 // unit tests
 #[cfg(test)]
 mod tests {
-    use crate::{Float, Keychain, evaluate, generate_expression, new_keychain};
+    use crate::{Float, Keychain, eval, generate_expression, new_keychain};
 
     fn calculate(input: &str) -> Float {
-        return evaluate(input).unwrap();
+        return eval(input).unwrap();
     }
 
     #[test]
@@ -118,9 +118,9 @@ mod tests {
         keychain.define_variable('b', crate::Operation::Variable(String::from("a")));
 
         let expr = generate_expression("7 * a + 3").unwrap();
-        assert_eq!(expr.evaluate_with_keychain(&keychain).unwrap(), 45.0);
+        assert_eq!(expr.eval_for(&keychain).unwrap(), 45.0);
         let expr2 = generate_expression("5 + 2 * b").unwrap();
-        assert_eq!(expr2.evaluate_with_keychain(&keychain).unwrap(), 17.0);
+        assert_eq!(expr2.eval_for(&keychain).unwrap(), 17.0);
     }
 
     #[test]
@@ -129,7 +129,7 @@ mod tests {
         let keychain2 = new_keychain!(a = 7.0, b = 10.0);
         let expr = generate_expression("a + b").unwrap();
 
-        assert_eq!(expr.evaluate_with_keychain(&keychain1).unwrap(), 8.0);
-        assert_eq!(expr.evaluate_with_keychain(&keychain2).unwrap(), 17.0);
+        assert_eq!(expr.eval_for(&keychain1).unwrap(), 8.0);
+        assert_eq!(expr.eval_for(&keychain2).unwrap(), 17.0);
     }
 }

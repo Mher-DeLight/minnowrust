@@ -25,7 +25,7 @@ fn question_loop() {
             break;
         }
 
-        match minnowop::evaluate_with_keychain(input, &keychain) {
+        match minnowop::eval_for(input, &keychain) {
             Ok(result) => println!("{result}"),
             Err(error) => eprintln!("Error: {error:?}"),
         }
