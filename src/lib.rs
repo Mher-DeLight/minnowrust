@@ -47,7 +47,7 @@ pub enum EvalError {
 // unit tests
 #[cfg(test)]
 mod tests {
-    use crate::{Float, Keychain, eval, generate_function, new_keychain};
+    use crate::{Float, Function, Keychain, eval, generate_function, new_keychain};
 
     fn calculate(input: &str) -> Float {
         return eval(input).unwrap();
@@ -127,7 +127,7 @@ mod tests {
     fn test_keychain_generation() {
         let keychain1 = new_keychain!(a = 5.0, b = 3.0);
         let keychain2 = new_keychain!(a = 7.0, b = 10.0);
-        let expr = generate_function("a + b").unwrap();
+        let expr: Function = Function::try_new("a + b").unwrap();
 
         assert_eq!(expr.eval_for(&keychain1).unwrap(), 8.0);
         assert_eq!(expr.eval_for(&keychain2).unwrap(), 17.0);

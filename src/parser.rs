@@ -1,6 +1,6 @@
 use crate::{
     EvalError::{self, UnexpectedEnd},
-    Float,
+    Float, generate_function,
     tokenizer::TokenType,
 };
 
@@ -15,6 +15,9 @@ pub enum Operation {
 }
 
 impl Operation {
+    pub fn try_new(from: &str) -> Result<Self, EvalError> {
+        return generate_function(from);
+    }
     pub fn eval(&self) -> Result<Float, EvalError> {
         match self {
             Operation::Number(n) => Ok(*n),
