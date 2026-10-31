@@ -147,7 +147,7 @@ impl Parser {
             .ok_or(EvalError::UnexpectedEnd(self.i))?;
         match tkn.tk_type {
             TokenType::Number => {
-                let num: f64 = tkn
+                let num: Float = tkn
                     .lexeme
                     .parse()
                     .map_err(|_| EvalError::InvalidNumber(self.i, tkn.lexeme.clone()))?;
