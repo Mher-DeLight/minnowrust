@@ -24,7 +24,12 @@ impl Operation {
             Operation::Addition(left, right) => Ok(left.eval()? + right.eval()?),
             Operation::Subtraction(left, right) => Ok(left.eval()? - right.eval()?),
             Operation::Multiplication(left, right) => Ok(left.eval()? * right.eval()?),
-            Operation::Division(left, right) => Ok(left.eval()? / right.eval()?),
+            Operation::Division(left, right) => {
+                if right.eval()? == 0.0 {
+                    return Err(EvalError::DivisionByZero(0));
+                }
+                Ok(left.eval()? / right.eval()?)
+            }
 
             Operation::Variable(_n) => Err(EvalError::InvalidEvaluationWithVariable(0)),
         }
@@ -119,10 +124,6 @@ impl Parser {
                 TokenType::Over => {
                     self.i += 1;
                     let right = self.parse_factor()?;
-                    if right.eval()? == 0.0 {
-                        return Err(EvalError::DivisionByZero(self.i));
-                    }
-
                     self.i += 1;
 
                     left = Operation::Division(Box::new(left.clone()), Box::new(right));

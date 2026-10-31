@@ -132,4 +132,14 @@ mod tests {
         assert_eq!(expr.eval_for(&keychain1).unwrap(), 8.0);
         assert_eq!(expr.eval_for(&keychain2).unwrap(), 17.0);
     }
+
+    #[test]
+    fn test_variable_equations() {
+        let keychain = new_keychain!(a = 2.0, b = 3.0, c = 5.0);
+        let e1: Function = Function::try_new("a / a").unwrap();
+        let e2: Function = Function::try_new("c / (a + b)").unwrap();
+
+        assert_eq!(e1.eval_for(&keychain).unwrap(), 1.0);
+        assert_eq!(e2.eval_for(&keychain).unwrap(), 1.0)
+    }
 }
