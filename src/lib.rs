@@ -8,18 +8,18 @@ pub use parser::Operation;
 pub type Float = f64;
 
 pub fn eval(input: &str) -> Result<Float, EvalError> {
-    let expr = generate_expression(input)?;
+    let expr = generate_function(input)?;
     let result = expr.eval()?;
 
     return Ok(result);
 }
 pub fn eval_for(input: &str, keychain: &Keychain) -> Result<Float, EvalError> {
-    let expr = generate_expression(input)?;
+    let expr = generate_function(input)?;
     let result = expr.eval_for(keychain)?;
 
     return Ok(result);
 }
-pub fn generate_expression(input: &str) -> Result<Operation, EvalError> {
+pub fn generate_function(input: &str) -> Result<Operation, EvalError> {
     let tokens = tokenizer::tokenize(input)?;
     let mut parser = parser::Parser::new(tokens);
     parser.parse()?;
@@ -47,7 +47,7 @@ pub enum EvalError {
 // unit tests
 #[cfg(test)]
 mod tests {
-    use crate::{Float, Keychain, eval, generate_expression, new_keychain};
+    use crate::{Float, Keychain, eval, generate_function, new_keychain};
 
     fn calculate(input: &str) -> Float {
         return eval(input).unwrap();
@@ -117,9 +117,9 @@ mod tests {
         keychain.define_variable('a', crate::Operation::Number(6.0));
         keychain.define_variable('b', crate::Operation::Variable(String::from("a")));
 
-        let expr = generate_expression("7 * a + 3").unwrap();
+        let expr = generate_function("7 * a + 3").unwrap();
         assert_eq!(expr.eval_for(&keychain).unwrap(), 45.0);
-        let expr2 = generate_expression("5 + 2 * b").unwrap();
+        let expr2 = generate_function("5 + 2 * b").unwrap();
         assert_eq!(expr2.eval_for(&keychain).unwrap(), 17.0);
     }
 
@@ -127,7 +127,7 @@ mod tests {
     fn test_keychain_generation() {
         let keychain1 = new_keychain!(a = 5.0, b = 3.0);
         let keychain2 = new_keychain!(a = 7.0, b = 10.0);
-        let expr = generate_expression("a + b").unwrap();
+        let expr = generate_function("a + b").unwrap();
 
         assert_eq!(expr.eval_for(&keychain1).unwrap(), 8.0);
         assert_eq!(expr.eval_for(&keychain2).unwrap(), 17.0);
