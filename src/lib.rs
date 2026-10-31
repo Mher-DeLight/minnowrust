@@ -2,6 +2,8 @@ mod functional;
 mod parser;
 mod tokenizer;
 
+pub use functional::Function;
+pub use functional::Keychain;
 pub use parser::Operation;
 type Float = f64;
 
@@ -10,6 +12,14 @@ pub fn evaluate(input: &str) -> Result<Float, EvalError> {
     let mut parser = parser::Parser::new(tokens);
     parser.parse()?;
     let result = parser.root.evaluate()?;
+
+    return Ok(result);
+}
+pub fn evaluate_with_keychain(input: &str, keychain: &Keychain) -> Result<Float, EvalError> {
+    let tokens = tokenizer::tokenize(input)?;
+    let mut parser = parser::Parser::new(tokens);
+    parser.parse()?;
+    let result = parser.root.evaluate_with_keychain(keychain)?;
 
     return Ok(result);
 }
