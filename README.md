@@ -5,4 +5,5 @@ Currently supports:
 - Order of operations
 - Parantheses
 - Division-by-Zero handling
-- `evaluate()` function with double precision
+- `eval()` function with double precision
+- Variables (via keychains)
