@@ -3,6 +3,7 @@ use crate::{EvalError, Float, tokenizer::TokenType};
 #[derive(Clone, Debug)]
 pub enum Operation {
     Number(Float),
+    Variable(String),
     Addition(Box<Operation>, Box<Operation>),
     Subtraction(Box<Operation>, Box<Operation>),
     Multiplication(Box<Operation>, Box<Operation>),
@@ -10,13 +11,15 @@ pub enum Operation {
 }
 
 impl Operation {
-    pub fn evaluate(&self) -> Float {
+    pub fn evaluate(&self) -> Result<Float, EvalError> {
         match self {
-            Operation::Number(n) => *n,
-            Operation::Addition(left, right) => left.evaluate() + right.evaluate(),
-            Operation::Subtraction(left, right) => left.evaluate() - right.evaluate(),
-            Operation::Multiplication(left, right) => left.evaluate() * right.evaluate(),
-            Operation::Division(left, right) => left.evaluate() / right.evaluate(),
+            Operation::Number(n) => Ok(*n),
+            Operation::Addition(left, right) => Ok(left.evaluate()? + right.evaluate()?),
+            Operation::Subtraction(left, right) => Ok(left.evaluate()? - right.evaluate()?),
+            Operation::Multiplication(left, right) => Ok(left.evaluate()? * right.evaluate()?),
+            Operation::Division(left, right) => Ok(left.evaluate()? / right.evaluate()?),
+
+            Operation::Variable(_n) => Err(EvalError::InvalidEvaluationWithVariable(0)),
         }
     }
 }
@@ -109,7 +112,7 @@ impl Parser {
                 TokenType::Over => {
                     self.i += 1;
                     let right = self.parse_factor()?;
-                    if right.evaluate() == 0.0 {
+                    if right.evaluate()? == 0.0 {
                         return Err(EvalError::DivisionByZero(self.i));
                     }
 

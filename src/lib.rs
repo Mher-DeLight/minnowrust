@@ -1,3 +1,4 @@
+mod functional;
 mod parser;
 mod tokenizer;
 
@@ -8,8 +9,9 @@ pub fn evaluate(input: &str) -> Result<Float, EvalError> {
     let tokens = tokenizer::tokenize(input)?;
     let mut parser = parser::Parser::new(tokens);
     parser.parse()?;
+    let result = parser.root.evaluate()?;
 
-    return Ok(parser.root.evaluate());
+    return Ok(result);
 }
 
 #[derive(Debug, PartialEq)]
@@ -23,6 +25,7 @@ pub enum EvalError {
     InvalidFactor(usize),
     UnmatchedParantheses(usize),
     EmptyParantheses(usize),
+    InvalidEvaluationWithVariable(usize),
     Unknown(usize),
 }
 
