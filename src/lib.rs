@@ -5,7 +5,7 @@ mod tokenizer;
 pub use functional::Function;
 pub use functional::Keychain;
 pub use parser::Operation;
-type Float = f64;
+pub type Float = f64;
 
 pub fn eval(input: &str) -> Result<Float, EvalError> {
     let expr = generate_expression(input)?;
