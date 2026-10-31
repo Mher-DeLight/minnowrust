@@ -3,6 +3,7 @@ use crate::Float;
 use crate::parser::Operation;
 use std::collections::HashMap;
 
+// keychains
 pub struct Keychain {
     pub(crate) hashmap: HashMap<char, Operation>,
 }
@@ -19,29 +20,37 @@ impl Keychain {
 }
 pub type Function = Operation;
 impl Function {
-    pub fn eval_for(&self, keychain: &Keychain) -> Result<Float, EvalError> {
+    pub fn get_substituted(&self, keychain: &Keychain) -> Result<Operation, EvalError> {
         match self {
-            Operation::Number(n) => Ok(*n),
-            Operation::Addition(left, right) => {
-                Ok(left.eval_for(keychain)? + right.eval_for(keychain)?)
-            }
-            Operation::Subtraction(left, right) => {
-                Ok(left.eval_for(keychain)? - right.eval_for(keychain)?)
-            }
-            Operation::Multiplication(left, right) => {
-                Ok(left.eval_for(keychain)? * right.eval_for(keychain)?)
-            }
-            Operation::Division(left, right) => {
-                Ok(left.eval_for(keychain)? / right.eval_for(keychain)?)
-            }
+            Operation::Number(n) => Ok(Operation::Number(*n)),
+            Operation::Addition(left, right) => Ok(Operation::Addition(
+                Box::new(left.get_substituted(keychain)?),
+                Box::new(right.get_substituted(keychain)?),
+            )),
+            Operation::Subtraction(left, right) => Ok(Operation::Subtraction(
+                Box::new(left.get_substituted(keychain)?),
+                Box::new(right.get_substituted(keychain)?),
+            )),
+            Operation::Multiplication(left, right) => Ok(Operation::Multiplication(
+                Box::new(left.get_substituted(keychain)?),
+                Box::new(right.get_substituted(keychain)?),
+            )),
+            Operation::Division(left, right) => Ok(Operation::Division(
+                Box::new(left.get_substituted(keychain)?),
+                Box::new(right.get_substituted(keychain)?),
+            )),
 
-            Operation::Variable(n) => Self::resolve_variable(
+            Operation::Variable(n) => Ok(Operation::Number(Self::resolve_variable(
                 keychain,
                 n.chars()
                     .next()
                     .ok_or_else(|| EvalError::InvalidVariableName(0, n.clone()))?,
-            ),
+            )?)),
         }
+    }
+    pub fn eval_for(&self, keychain: &Keychain) -> Result<Float, EvalError> {
+        let sub = self.get_substituted(keychain)?;
+        return sub.eval();
     }
 
     fn resolve_variable(keychain: &Keychain, varname: char) -> Result<Float, EvalError> {
