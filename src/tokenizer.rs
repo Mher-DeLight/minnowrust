@@ -9,6 +9,7 @@ pub enum TokenType {
     Over,
     LParen,
     RParen,
+    Varname,
 }
 
 #[derive(Debug)]
@@ -83,6 +84,11 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
             tokens.push(Token {
                 lexeme: String::from(c),
                 tk_type: TokenType::RParen,
+            });
+        } else if c.is_ascii_alphabetic() {
+            tokens.push(Token {
+                lexeme: String::from(c),
+                tk_type: TokenType::Varname,
             });
         } else if c != ' ' {
             return Err(EvalError::InvalidCharacter(i, c));
