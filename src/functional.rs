@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 // keychains
 pub struct Keychain {
-    pub(crate) hashmap: HashMap<char, Operation>,
+    pub(crate) hashmap: HashMap<String, Operation>,
 }
 impl Keychain {
     pub fn new() -> Self {
@@ -14,7 +14,7 @@ impl Keychain {
         }
     }
     // hopefully temporary
-    pub fn define_variable(&mut self, name: char, value: Operation) {
+    pub fn define_variable(&mut self, name: String, value: Operation) {
         self.hashmap.insert(name, value);
     }
 }
@@ -40,12 +40,7 @@ impl Function {
                 Box::new(right.get_substituted(keychain)?),
             )),
 
-            Operation::Variable(n) => Ok(Operation::Number(Self::resolve_variable(
-                keychain,
-                n.chars()
-                    .next()
-                    .ok_or_else(|| EvalError::InvalidVariableName(0, n.clone()))?,
-            )?)),
+            Operation::Variable(n) => Ok(Operation::Number(Self::resolve_variable(keychain, n)?)),
         }
     }
     pub fn eval_for(&self, keychain: &Keychain) -> Result<Float, EvalError> {
@@ -53,15 +48,15 @@ impl Function {
         return sub.eval();
     }
 
-    fn resolve_variable(keychain: &Keychain, varname: char) -> Result<Float, EvalError> {
-        if keychain.hashmap.contains_key(&varname) {
+    fn resolve_variable(keychain: &Keychain, varname: &str) -> Result<Float, EvalError> {
+        if keychain.hashmap.contains_key(varname) {
             return Ok(keychain
                 .hashmap
-                .get(&varname)
+                .get(varname)
                 .ok_or_else(|| EvalError::Unknown(0))?
                 .eval_for(keychain)?);
         }
-        return Err(EvalError::UndefinedVariable(0, varname));
+        return Err(EvalError::UndefinedVariable(0, varname.to_string()));
     }
 }
 
@@ -71,7 +66,7 @@ macro_rules! new_keychain {
         let mut keychain = $crate::Keychain::new();
 
         $(
-            keychain.define_variable(stringify!($key).to_string().chars().next().unwrap(), $crate::Operation::Number($value));
+            keychain.define_variable(stringify!($key).to_string(), $crate::Operation::Number($value));
         )*
 
         keychain

@@ -39,7 +39,7 @@ pub enum EvalError {
     UnmatchedParantheses(usize),
     EmptyParantheses(usize),
     InvalidEvaluationWithVariable(usize),
-    UndefinedVariable(usize, char),
+    UndefinedVariable(usize, String),
     InvalidVariableName(usize, String),
     Unknown(usize),
 }
@@ -114,8 +114,11 @@ mod tests {
     #[test]
     fn test_keychains() {
         let mut keychain = Keychain::new();
-        keychain.define_variable('a', crate::Operation::Number(6.0));
-        keychain.define_variable('b', crate::Operation::Variable(String::from("a")));
+        keychain.define_variable("a".to_string(), crate::Operation::Number(6.0));
+        keychain.define_variable(
+            "b".to_string(),
+            crate::Operation::Variable(String::from("a")),
+        );
 
         let expr = generate_function("7 * a + 3").unwrap();
         assert_eq!(expr.eval_for(&keychain).unwrap(), 45.0);

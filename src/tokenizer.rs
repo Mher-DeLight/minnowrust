@@ -85,9 +85,22 @@ pub fn tokenize(plain: &str) -> Result<Vec<Token>, EvalError> {
                 lexeme: String::from(c),
                 tk_type: TokenType::RParen,
             });
-        } else if c.is_ascii_alphabetic() {
+        } else if c.is_ascii_alphabetic() || c == '_' {
+            let mut name: String = String::from(c);
+            i += 1;
+            while i < plain.chars().count() {
+                let current = plain.chars().nth(i).ok_or(EvalError::UnexpectedEnd(i))?;
+
+                if !current.is_ascii_alphabetic() && current != '_' {
+                    break;
+                }
+
+                name.push(current);
+                i += 1;
+            }
+            i -= 1;
             tokens.push(Token {
-                lexeme: String::from(c),
+                lexeme: name,
                 tk_type: TokenType::Varname,
             });
         } else if c != ' ' {

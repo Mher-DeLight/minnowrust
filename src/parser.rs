@@ -156,9 +156,7 @@ impl Parser {
             }
             TokenType::Varname => {
                 let tkn = self.tokens.get(self.i).ok_or(UnexpectedEnd(self.i))?;
-                let char = tkn.lexeme.chars().next();
-                let name: char =
-                    char.ok_or(EvalError::InvalidVariableName(self.i, tkn.lexeme.clone()))?;
+                let name = tkn.lexeme.clone();
                 return Ok(Operation::Variable(String::from(name)));
             }
             TokenType::LParen => {
