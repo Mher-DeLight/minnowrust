@@ -6,6 +6,8 @@ fn main() {
 
 fn question_loop() {
     let mut keychain = minnowop::Keychain::new();
+    // i thought of changing this line to use the new API
+    // but functional.rs errors when i remove this line for some reason????
     keychain.define_variable('a', minnowop::Operation::Number(5.0));
 
     loop {
