@@ -91,3 +91,19 @@ macro_rules! eval_immediate_func {
         })()
     }};
 }
+
+// modifying the equation
+impl Function {
+    pub fn get_double(&self) -> Function {
+        Operation::Multiplication(Box::new(Operation::Number(2.0)), Box::new(self.clone()))
+    }
+    pub fn get_half(&self) -> Function {
+        Operation::Multiplication(Box::new(Operation::Number(0.5)), Box::new(self.clone()))
+    }
+    pub fn get_product(&self, num: Float) -> Function {
+        Operation::Multiplication(Box::new(Operation::Number(num)), Box::new(self.clone()))
+    }
+    pub fn get_sum(&self, num: Float) -> Function {
+        Operation::Addition(Box::new(Operation::Number(num)), Box::new(self.clone()))
+    }
+}

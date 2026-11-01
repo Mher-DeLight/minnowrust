@@ -198,4 +198,39 @@ mod tests {
             6.0
         );
     }
+
+    #[test]
+    fn test_function_modifiers() {
+        let func1: Function = Function::try_new("3 * x + 1").unwrap();
+        let keychain: Keychain = new_keychain!(x = 4.0);
+
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 13.0);
+        assert_eq!(func1.get_double().eval_for(&keychain).unwrap(), 26.0);
+        assert_eq!(
+            func1.get_double().get_double().eval_for(&keychain).unwrap(),
+            52.0
+        );
+        assert_eq!(
+            func1.get_double().get_half().eval_for(&keychain).unwrap(),
+            func1.eval_for(&keychain).unwrap()
+        );
+
+        assert_eq!(func1.get_product(3.0).eval_for(&keychain).unwrap(), 39.0);
+        assert_eq!(
+            func1
+                .get_product(3.0)
+                .get_sum(2.0)
+                .eval_for(&keychain)
+                .unwrap(),
+            41.0
+        );
+        assert_eq!(
+            func1
+                .get_sum(5.0)
+                .get_product(3.0)
+                .eval_for(&keychain)
+                .unwrap(),
+            54.0
+        );
+    }
 }
