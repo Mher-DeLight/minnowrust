@@ -92,7 +92,7 @@ macro_rules! eval_immediate_func {
     }};
 }
 
-// modifying the equation
+// modifier getters
 impl Function {
     pub fn get_double(&self) -> Function {
         Operation::Multiplication(Box::new(Operation::Number(2.0)), Box::new(self.clone()))
@@ -105,5 +105,25 @@ impl Function {
     }
     pub fn get_sum(&self, num: Float) -> Function {
         Operation::Addition(Box::new(Operation::Number(num)), Box::new(self.clone()))
+    }
+}
+
+// modifiers
+impl Function {
+    pub fn add(&mut self, num: Float) {
+        let old = std::mem::replace(self, Operation::Number(0.0));
+        *self = Operation::Addition(Box::new(old), Box::new(Operation::Number(num)));
+    }
+    pub fn subtract(&mut self, num: Float) {
+        let old = std::mem::replace(self, Operation::Number(0.0));
+        *self = Operation::Subtraction(Box::new(old), Box::new(Operation::Number(num)));
+    }
+    pub fn multiply(&mut self, num: Float) {
+        let old = std::mem::replace(self, Operation::Number(0.0));
+        *self = Operation::Multiplication(Box::new(old), Box::new(Operation::Number(num)));
+    }
+    pub fn divide(&mut self, num: Float) {
+        let old = std::mem::replace(self, Operation::Number(0.0));
+        *self = Operation::Division(Box::new(old), Box::new(Operation::Number(num)));
     }
 }

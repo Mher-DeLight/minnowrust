@@ -200,7 +200,7 @@ mod tests {
     }
 
     #[test]
-    fn test_function_modifiers() {
+    fn test_function_getter_modifiers() {
         let func1: Function = Function::try_new("3 * x + 1").unwrap();
         let keychain: Keychain = new_keychain!(x = 4.0);
 
@@ -232,5 +232,21 @@ mod tests {
                 .unwrap(),
             54.0
         );
+    }
+
+    #[test]
+    fn test_function_modifiers() {
+        let mut func1: Function = Function::try_new("2 * x + 1").unwrap();
+        let keychain: Keychain = new_keychain!(x = 3.0);
+
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 7.0);
+        func1.multiply(4.0);
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 28.0);
+        func1.divide(2.0);
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 14.0);
+        func1.add(3.0);
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 17.0);
+        func1.subtract(6.0);
+        assert_eq!(func1.eval_for(&keychain).unwrap(), 11.0);
     }
 }
