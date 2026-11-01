@@ -1,14 +1,13 @@
 use std::io::{self, Write};
 
+use minnowop::{Function, new_keychain};
+
 fn main() {
     question_loop();
 }
 
 fn question_loop() {
-    let mut keychain = minnowop::Keychain::new();
-    // i thought of changing this line to use the new API
-    // but functional.rs errors when i remove this line for some reason????
-    keychain.define_variable('a', minnowop::Operation::Number(5.0));
+    let keychain = new_keychain!(a = 5.0);
 
     loop {
         let mut input = String::new();
@@ -22,14 +21,22 @@ fn question_loop() {
         }
 
         let input = input.trim();
-
         if input == "exit" {
             break;
         }
 
-        match minnowop::eval_for(input, &keychain) {
+        let func_res = Function::try_new(input);
+        let func: Function;
+        match func_res {
+            Ok(f) => func = f,
+            Err(err) => {
+                eprintln!("Parsing Error: {err:?}");
+                continue;
+            }
+        }
+        match func.eval_for(&keychain) {
             Ok(result) => println!("{result}"),
-            Err(error) => eprintln!("Error: {error:?}"),
+            Err(error) => eprintln!("Evaluation Error: {error:?}"),
         }
     }
 }
