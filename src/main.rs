@@ -7,7 +7,7 @@ fn main() {
 }
 
 fn question_loop() {
-    let keychain = new_keychain!(a = 5.0);
+    let keychain = new_keychain!(a = 5.0, pi = 3.14, e = 2.71, g_earth = 9.81);
 
     loop {
         let mut input = String::new();

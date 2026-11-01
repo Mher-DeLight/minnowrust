@@ -145,4 +145,42 @@ mod tests {
         assert_eq!(e1.eval_for(&keychain).unwrap(), 1.0);
         assert_eq!(e2.eval_for(&keychain).unwrap(), 1.0)
     }
+
+    #[test]
+    fn test_string_variable_names() {
+        let keychain = new_keychain!(
+            pi = 3.14,
+            e = 2.71,
+            g_earth = 9.81,
+            density_sea_level = 1.225
+        );
+        assert_eq!(
+            generate_function("pi").unwrap().eval_for(&keychain),
+            Ok(3.14)
+        );
+        assert_eq!(
+            generate_function("e").unwrap().eval_for(&keychain),
+            Ok(2.71)
+        );
+        assert_eq!(
+            generate_function("g_earth").unwrap().eval_for(&keychain),
+            Ok(9.81)
+        );
+        assert_eq!(
+            generate_function("density_sea_level")
+                .unwrap()
+                .eval_for(&keychain),
+            Ok(1.225)
+        );
+        assert_eq!(
+            generate_function("pi + e").unwrap().eval_for(&keychain),
+            Ok(5.85)
+        );
+        assert_eq!(
+            generate_function("pi + density_sea_level + e")
+                .unwrap()
+                .eval_for(&keychain),
+            Ok(7.075)
+        );
+    }
 }
