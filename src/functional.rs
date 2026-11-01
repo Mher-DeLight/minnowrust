@@ -68,7 +68,7 @@ impl Function {
 #[macro_export]
 macro_rules! new_keychain {
     ($($key:ident = $value:expr),* $(,)?) => {{
-        let mut keychain = Keychain::new();
+        let mut keychain = $crate::Keychain::new();
 
         $(
             keychain.define_variable(stringify!($key).to_string().chars().next().unwrap(), $crate::Operation::Number($value));
