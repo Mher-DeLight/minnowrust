@@ -72,3 +72,22 @@ macro_rules! new_keychain {
         keychain
     }};
 }
+
+#[macro_export]
+macro_rules! eval_immediate_func {
+    ($expr:expr, $($key:ident = $value:expr),* $(,)?) => {{
+        (|| -> Result<$crate::Float, $crate::EvalError> {
+            let func = $crate::Function::try_new($expr)?;
+            let mut keychain = $crate::Keychain::new();
+
+            $(
+                keychain.define_variable(
+                    stringify!($key).to_string(),
+                    $crate::Operation::Number($value),
+                );
+            )*
+
+            func.eval_for(&keychain)
+        })()
+    }};
+}
